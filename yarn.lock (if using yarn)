@@ -1,0 +1,14 @@
+{
+  "name": "rushago-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "babel src --out-dir dist"
+  },
+  "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/preset-env": "^7.0.0"
+  },
+  "devDependencies": {}
+}
