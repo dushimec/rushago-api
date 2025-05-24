@@ -7,7 +7,7 @@ import { UserActivityLog } from '../models/UserActivity.js';
 import { cloudinary } from '../config/config.js';
 import { Message } from '../models/Message.js';
 
-const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 export const generateJWT = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
