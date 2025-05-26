@@ -23,6 +23,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1', routes);
 app.use(errorHandler);
 
+app.get('/', (req, res) => {
+  res.send('RushaGO server is running');
+});
+
 const PORT = process.env.PORT || 15000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
