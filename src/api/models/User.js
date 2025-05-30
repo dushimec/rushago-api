@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     }
   },
   authentication: {
-    password_hash: { type: String },
+    password_hash: { type: String, required: true },
     auth_providers: [{
       provider: { type: String, enum: ['google', 'apple', 'facebook'] },
       provider_id: { type: String }
