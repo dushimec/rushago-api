@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         in_app: { type: Boolean, default: true }
       }
     }
-  },
+  }, 
   authentication: {
     password_hash: { type: String, required: true },
     auth_providers: [{
