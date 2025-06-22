@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
   res.send('RushaGO server is running');
 });
 
-const PORT = process.env.PORT || 15000;
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 process.on('SIGTERM', async () => {
