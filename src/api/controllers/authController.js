@@ -25,17 +25,17 @@ export const signup = asyncHandler(async (req, res) => {
 
   const password_hash = await bcrypt.hash(password, 10);
   const verification_token = generateVerificationToken();
-  const phone_verification_code = await sendPhoneVerificationCode(phone);
 
   const user = await User.create({
     name,
     email,
     phone,
+    verifications: {
+      phone_verified: true
+    },
     authentication: {
       password_hash,
-      verification_token,
-      phone_verification_code,
-      phone_verification_expires: new Date(Date.now() + 3600000)
+      verification_token
     },
     role: { is_renter: true }
   });
@@ -49,10 +49,10 @@ export const signup = asyncHandler(async (req, res) => {
   await sendVerificationEmail(email, verification_token);
   await logUserActivity(user._id, 'signup', { action: 'user_created' }, { device: req.headers['user-agent'] });
 
-  const token = generateJWT({ id: user._id, isProOwner: false });
+  const token = generateJWT({ id: user._id, isProOwner: false, name: user.name, email: user.email });
 
   res.status(201).json({
-    message: 'Signup successful, please verify email and phone',
+    message: 'Signup successful, please verify your email',
     token,
     user: { id: user._id, email, phone, name, isProOwner: false }
   });
@@ -77,9 +77,10 @@ export const login = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials');
   }
 
-  if (!user.verifications.email_verified || !user.verifications.phone_verified) {
+  // Only check email verification (phone is always verified)
+  if (!user.verifications.email_verified) {
     res.status(403);
-    throw new Error('Please verify your email and phone');
+    throw new Error('Please verify your email');
   }
 
   user.activity_metrics.last_login = new Date();
@@ -90,12 +91,17 @@ export const login = asyncHandler(async (req, res) => {
 
   await logUserActivity(user._id, 'login', { action: 'user_login' }, { device: req.headers['user-agent'] });
 
-  const token = generateJWT({ id: user._id, isProOwner: user.role.is_owner && user.subscription.plan === 'pro_owner' });
+  const token = generateJWT({ id: user._id, isProOwner: user.role.is_owner && user.subscription.plan === 'pro_owner', role: user.role, name: user.name, email: user.email });
 
   res.status(200).json({
     message: 'Login successful',
     token,
-    user: { id: user._id, email, name: user.name, isProOwner: user.role.is_owner && user.subscription.plan === 'pro_owner' }
+    user: { 
+      id: user._id, 
+      email, 
+      name: user.name, 
+      isProOwner: user.role.is_owner && user.subscription.plan === 'pro_owner' 
+    }
   });
 });
 

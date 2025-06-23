@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import mongoose from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
+import "dotenv/config";
 
 const connectDB = async () => {
   try {
@@ -13,9 +14,8 @@ const connectDB = async () => {
 };
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false,
+  service: 'gmail',
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
